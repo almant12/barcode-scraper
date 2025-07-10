@@ -11,11 +11,11 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
 
-    protected ImageUploadService $imageUploadService;
+    private ImageUploadService $imageUploadService;
 
     public function __construct(ImageUploadService $imageUploadService)
     {
-        $this->$imageUploadService = $imageUploadService;
+        $this->imageUploadService = $imageUploadService;
     }
 
     public function index()
@@ -33,10 +33,10 @@ class ProductController extends Controller
         $product = new Product();
         $product->name = $data['name'];
         $product->brand = $data['brand'];
-        $product->description = $data['description'];
+        $product->description = $data['description'] ?? null;
         $product->image_url = $imagePath;
         $product->price = $data['price'];
-        $product->source = $data['source'];
+        $product->source = $data['source'] ?? null;
         $product->save();
 
         return new ProductResource($product);
