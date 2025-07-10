@@ -46,17 +46,9 @@ class CustomException extends Exception
             ], 422);
         }
 
-
-        if ($exception instanceof NotFoundHttpException) {
-            return response()->json([
-                'message' => 'Not Found'
-            ], 404);
-        }
-
-
         if ($exception instanceof MethodNotAllowedHttpException) {
             return response()->json([
-                'message' => 'Method Not Allowed'
+                'message' => $exception->getMessage() ?: 'Method Not Allowed'
             ], 405);
         }
 

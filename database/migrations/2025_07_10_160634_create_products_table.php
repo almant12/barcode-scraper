@@ -19,9 +19,6 @@ return new class extends Migration
             $table->string('image_url')->nullable();
             $table->decimal('price', 8, 2)->nullable();
             $table->string('source')->nullable();
-
-            
-            $table->timestamps();
         });
     }
 
