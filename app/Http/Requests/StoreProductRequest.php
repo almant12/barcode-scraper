@@ -11,7 +11,7 @@ class StoreProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,7 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'image' => 'required|image',
+            'image' => 'required|file',
             'description' => 'nullable|string',
             'brand' => 'required|string',
             'price' => 'required|numeric|min:0',

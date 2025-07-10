@@ -6,6 +6,7 @@ use Illuminate\Validation\ValidationException;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -21,7 +22,6 @@ class CustomException extends Exception
     {
 
         if ($exception instanceof NotFoundHttpException) {
-
             return response()->json([
                 'message' => $exception->getMessage() ?: 'Resource not found'
             ], 404);
@@ -58,6 +58,19 @@ class CustomException extends Exception
                 'message' => $exception->getMessage()
             ], $exception->getStatusCode());
         }
+
+        if (config('app.debug')) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'exception' => get_class($exception),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'trace' => collect($exception->getTrace())->map(function ($trace) {
+                    return Arr::except($trace, ['args']);
+                })->all(),
+            ], 500);
+        }
+
 
         return response()->json([
             'message' => 'Server message'
