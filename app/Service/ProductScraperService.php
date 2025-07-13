@@ -15,7 +15,7 @@ class ProductScraperService
         $crawler = new Crawler($html);
 
         return [
-            'product_name' => $crawler->filter('h2[property="food:name"]')->count()
+            'product_name' => $crawler->filter('h2[property="food:name"]') || null;
                 ? $crawler->filter('h2[property="food:name"]')->text()
                 : 'N/A',
 
@@ -46,4 +46,14 @@ class ProductScraperService
             'source_url' => $url,
         ];
     }
+
+
+    private function extractText(Crawler $crawler, string $selector): ?string{
+
+        return $crawler->filter($selector)->count() ?
+        $crawler->filter($selector)->text() : null;
+    }
+    
 }
+
+
