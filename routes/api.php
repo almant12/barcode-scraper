@@ -14,17 +14,19 @@ Route::get('/user', function () {});
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::post('/', [ProductController::class, 'store']);
+    Route::get('/scrape/{barcode}', [ProductController::class, 'scrapeProduct']);
 });
+
 
 
 Route::post('test-ai', function (Request $request) {
 
-    $validated = $request->validate([
-        'prompt' => 'required'
+    $request->validate([
+        'barcode' => 'required|string'
     ]);
 
-    $prompt = $validated['prompt'];
+    $barcode = $request->input('barcode');
 
-    $text = GeminiAPI::callAPI($prompt);
+    $text = GeminiAPI::callAPI($barcode);
     return response()->json($text);
 });

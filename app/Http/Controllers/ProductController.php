@@ -6,16 +6,21 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Service\ImageUploadService;
+use App\Service\ProductScraperService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
 
     private ImageUploadService $imageUploadService;
+    private ProductScraperService $productScraperService;
 
-    public function __construct(ImageUploadService $imageUploadService)
-    {
+    public function __construct(
+        ImageUploadService $imageUploadService,
+        ProductScraperService $productScraperService
+    ) {
         $this->imageUploadService = $imageUploadService;
+        $this->productScraperService = $productScraperService;
     }
 
     public function index()
@@ -40,5 +45,15 @@ class ProductController extends Controller
         $product->save();
 
         return new ProductResource($product);
+    }
+
+
+    public function scrapeProduct(Request $request, string $barcode)
+    {
+        $url = "https://world.openfoodfacts.org/product/{$barcode}";
+
+        $productData = $this->productScraperService->scrapeProduct($url);
+
+        return response()->json($productData);
     }
 }
