@@ -13,12 +13,19 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('brand');
-            $table->text('description')->nullable();
+
+            $table->unsignedBigInteger('barcode')->unique()->nullable();
+            $table->string('product_name')->nullable();
+            $table->string('brand')->nullable();
+            $table->string('categories')->nullable();
+            $table->string('labels')->nullable();
+            $table->string('countries_sold')->nullable();
             $table->string('image_url')->nullable();
-            $table->decimal('price', 8, 2)->nullable();
-            $table->string('source')->nullable();
+            $table->json('nutrient_levels')->nullable();
+            $table->json('nutrient_table')->nullable();
+            $table->text('ingredients')->nullable();
+            $table->json('ingredients_info')->nullable();
+            $table->string('source_url')->nullable();
 
             $table->timestamps();
         });

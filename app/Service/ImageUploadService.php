@@ -4,7 +4,7 @@ namespace App\Service;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-
+use Illuminate\Support\Facades\Storage;
 
 class ImageUploadService
 {
@@ -20,6 +20,22 @@ class ImageUploadService
 
             return 'storage/' . $pathImage;
         }
+    }
+
+    public function uploadImageFromUrl($imageUrl, $path)
+    {
+        $imageContents = file_get_contents($imageUrl);
+        if ($imageContents === false) {
+            return null;
+        }
+
+        $ext = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
+        $ext = $ext ?: "jpg";
+
+        $imageName = 'image_' . uniqid() . '_' . $ext;
+        Storage::disk('public')->put($path . '/' . $imageName, $imageContents);
+
+        return 'storage/' . $path . '/' . $imageName;
     }
 
     public function updateImage(Request $request, $filename, $oldPath, $path)
