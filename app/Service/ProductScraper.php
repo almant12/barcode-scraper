@@ -5,7 +5,7 @@ namespace App\Service;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
-class ProductScraperService
+class ProductScraper
 {
 
     public function scrapeProduct($url): array
