@@ -41,7 +41,7 @@ php artisan scrape:product {barcode}
 ```
 
 ```bash
-GET /products/scrape/{barcode}
+Endpoint: GET /products/scrape/{barcode}
 ```
 
 Description: Scrapes product data for the given barcode from OpenFoodFacts and saves it.
@@ -55,3 +55,12 @@ Response:
 200 OK: Product details saved and returned.
 
 404 Not Found: Product not found on OpenFoodFacts.
+
+
+## Scrape Product with GeminiAi
+### Disclaimer
+The Gemini AI scraper is experimental and does not guarantee 100% accuracy. The results may contain incomplete or incorrect product information due to the inherent limitations of AI-powered web scraping. Please verify the data independently before use.
+
+```bash
+Endpoint: GET /products/ai-scrape/{barcode}
+```
