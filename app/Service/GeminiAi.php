@@ -28,6 +28,18 @@ class GeminiAi
             'X-goog-api-key' => $apiKey,
         ])->post($url, $payload);
 
-        return $response['candidates'][0]['content']['parts'][0]['text'] ?? 'No response from Gemini';
+        return self::cleanGeminiResponse($response['candidates'][0]['content']['parts'][0]['text'] ?? 'No response from Gemini');
+    }
+
+    
+    private static function cleanGeminiResponse(string $text): string
+    {
+        // Remove ```json or ``` and ending ```
+        $text = preg_replace('/^```(?:json)?\s*/', '', $text); // remove starting ```
+        $text = preg_replace('/\s*```$/', '', $text);          // remove ending ```
+
+        return trim($text);
     }
 }
+
+
