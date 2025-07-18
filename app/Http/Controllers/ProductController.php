@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Service\GeminiAi;
 use App\Service\ProductService;
 
 class ProductController extends Controller
@@ -30,5 +31,12 @@ class ProductController extends Controller
     public function scrapeProduct(string $barcode)
     {
         return $this->productService->scrapeAndStoreProduct($barcode);
+    }
+
+       public function aiScrapeProduct(string $barcode, GeminiAi $geminiAi)
+    {
+        $response = $geminiAi->scrapeProduct($barcode);
+
+        return $response;
     }
 }

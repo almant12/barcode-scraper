@@ -4,9 +4,9 @@ namespace App\Service;
 
 use Illuminate\Support\Facades\Http;
 
-class GeminiAPI
+class GeminiAi
 {
-    public static function callAPI(string $barcode)
+    public static function scrapeProduct(string $barcode)
     {
         $apiKey = env('GEMINI_API_KEY');
 
@@ -28,6 +28,6 @@ class GeminiAPI
             'X-goog-api-key' => $apiKey,
         ])->post($url, $payload);
 
-        return $response->json()['candidates'][0]['content']['parts'][0]['text'] ?? 'No response from Gemini';
+        return $response['candidates'][0]['content']['parts'][0]['text'] ?? 'No response from Gemini';
     }
 }

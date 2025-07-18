@@ -76,4 +76,5 @@ class ProductService
 
         return new ProductResource($product);
     }
+
 }
