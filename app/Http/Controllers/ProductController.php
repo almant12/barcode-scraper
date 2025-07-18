@@ -33,11 +33,8 @@ class ProductController extends Controller
         return $this->productService->scrapeAndStoreProduct($barcode);
     }
 
-    public function aiScrapeProduct(string $barcode, GeminiAi $geminiAi)
+    public function aiScrapeProduct(string $barcode)
     {
-        $response = $geminiAi->scrapeProduct($barcode);
-        $data = json_decode($response, true);
-
-        return response()->json($data);
+        return $this->productService->storeScrapeProductAi($barcode);
     }
 }

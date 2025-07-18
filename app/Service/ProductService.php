@@ -14,13 +14,16 @@ class ProductService
 {
     protected $productScraper;
     protected $imageUploadService;
+    protected $geminiAi;
 
     public function __construct(
         ProductScraper $productScraper,
-        ImageUploadService $imageUploadService
+        ImageUploadService $imageUploadService,
+        GeminiAi $geminiAi
     ) {
         $this->productScraper = $productScraper;
         $this->imageUploadService = $imageUploadService;
+        $this->geminiAi = $geminiAi;
     }
 
     public function getProducts(): AnonymousResourceCollection
@@ -59,7 +62,7 @@ class ProductService
         $product = Product::updateOrCreate(
             ['barcode' => $barcode],
             [
-                'product_name'     => $productData['product_name'] ?? null,
+                'name'     => $productData['product_name'] ?? null,
                 'brand'            => $productData['brand'] ?? null,
                 'categories'       => $productData['categories'] ?? null,
                 'labels'           => $productData['labels'] ?? null,
@@ -77,4 +80,20 @@ class ProductService
         return new ProductResource($product);
     }
 
+    public function storeScrapeProductAi(string $barcode)
+    {
+        $response = $this->geminiAi->scrapeProduct($barcode);
+        $productData = json_decode($response);
+
+        $product = Product::create([
+            'product' => $productData->name,
+            'brand' => $productData->brand ?? null,
+            'description' => $productData->description ?? null,
+            'image_url' => $productData->iamge_url ?? null,
+            'price' => $productData->price ?? null,
+            'source_url' => $productData->sourceUrl ?? null,
+        ]);
+
+        return $product;
+    }
 }

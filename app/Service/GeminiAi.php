@@ -14,8 +14,34 @@ class GeminiAi
             'contents' => [
                 [
                     'parts' => [
-                        ['text' => "You are an expert at finding product details on the internet using a barcode. Always return details only if the product actually exists and include only REAL data from the first result in Google. Return a JSON object with these keys: name, brand, description, image_url, price, sourceUrl. If you find nothing valid, respond with: { \"error\": \"Product not found\" }"],
-                        ['text' => "Find details for this barcode: $barcode"],
+                        [
+                            'text' => <<<PROMPT
+You are an expert at finding real product details using a barcode.
+
+Search specifically through these trusted websites:
+- https://www.barcodelookup.com/
+- https://world.openfoodfacts.org/
+
+Only use information from one of those sites or their subpages. Do not guess or use made-up data.
+
+Make sure the product exists and includes:
+- A real, clear image of the physical product (not a logo or icon).
+- Verified data from the actual page.
+
+Return your response as JSON with these exact keys:
+- name: Product name
+- brand: Brand name
+- description: Short product description
+- image_url: Direct link to the real product image (must show the actual product)
+- price: Typical price (if available)
+- sourceUrl: URL to the page where the product was found
+
+If no valid product is found on either site, respond only with:
+{ "error": "Product not found" }
+
+Barcode: $barcode
+PROMPT
+                        ],
                     ],
                 ],
             ],
@@ -31,7 +57,7 @@ class GeminiAi
         return self::cleanGeminiResponse($response['candidates'][0]['content']['parts'][0]['text'] ?? 'No response from Gemini');
     }
 
-    
+
     private static function cleanGeminiResponse(string $text): string
     {
         // Remove ```json or ``` and ending ```
@@ -41,5 +67,3 @@ class GeminiAi
         return trim($text);
     }
 }
-
-
