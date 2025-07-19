@@ -7,6 +7,16 @@ This Laravel project allows users to input a barcode and automatically scrape pr
 -   Primary source: [OpenFoodFacts] (https://world.openfoodfacts.org/)
 -   Secondary (experimental): Gemini AI-powered web search — used as a fallback but less accurate.
 
+## Scraping Engine
+
+This package uses the following Symfony components to parse and extract data from HTML pages:
+
+-   symfony/dom-crawler: Used to navigate and filter HTML content as a DOM tree.
+
+-   symfony/css-selector: Allows the use of CSS selectors (like .product-title, #price, etc.) to find elements in the DOM, making it easy to target specific content.
+
+These tools together enable precise scraping of structured data from web pages, especially when dealing with HTML that doesn't follow strict semantic structure. They are lightweight, fast, and ideal for use in CLI or Laravel command-based scraping workflows.
+
 ## Setup Instructions
 
 1. Clone the repository:
@@ -56,9 +66,10 @@ Response:
 
 404 Not Found: Product not found on OpenFoodFacts.
 
-
 ## Scrape Product with GeminiAi
+
 ### Disclaimer
+
 The Gemini AI scraper is experimental and does not guarantee 100% accuracy. The results may contain incomplete or incorrect product information due to the inherent limitations of AI-powered web scraping. Please verify the data independently before use.
 
 ```bash
