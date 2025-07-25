@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Helpers\CrawlerHelper;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
