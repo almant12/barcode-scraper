@@ -57,18 +57,19 @@ class ProductService
             throw new NotFoundHttpException("Product with barcode {$barcode} not found.");
         }
 
-        $imagePath = $this->imageUploadService->uploadImageFromUrl($productData['image_url'], 'images');
+        dd($productData);
+        $imagePath = $this->imageUploadService->uploadImageFromUrl($productData['image_urls'], 'images');
 
         $product = Product::updateOrCreate(
-            ['barcode' => $barcode],
+            ['source_url' => $url],
             [
-                'name'     => $productData['product_name'] ?? null,
+                'title'     => $productData['title'] ?? null,
                 'brand'            => $productData['brand'] ?? null,
                 'categories'       => $productData['categories'] ?? null,
                 'labels'           => $productData['labels'] ?? null,
                 'countries_sold'   => $productData['countries_sold'] ?? null,
                 'barcode'          => $barcode,
-                'image_url'        => $imagePath ?? null,
+                'image_urls'        => $imagePath ?? null,
                 'nutrient_levels'  => $productData['nutrient_levels'] ?? null,
                 'nutrient_table'   => $productData['nutrient_table'] ?? null,
                 'ingredients'      => $productData['ingredients'] ?? null,

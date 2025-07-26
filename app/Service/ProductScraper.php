@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
 use function App\Helpers\extractAttr;
+use function App\Helpers\extractAttrs;
 use function App\Helpers\extractListText;
 use function App\Helpers\extractTable;
 use function App\Helpers\extractText;
@@ -23,13 +24,13 @@ class ProductScraper
         $product_name = preg_split('/\s+This|\n/', $product_name_raw)[0];
 
         return [
-            'product_name'   => $product_name,
+            'title'   => $product_name,
             'brand'          => extractText($crawler, '#field_brands_value'),
             'categories'     => extractText($crawler, '#field_categories_value'),
             'labels'         => extractText($crawler, '#field_labels_value'),
             'countries_sold' => extractText($crawler, '#field_countries_value'),
             'barcode'        => extractText($crawler, '#barcode'),
-            'image_url'      => extractAttr($crawler, 'img#og_image', 'src'),
+            'image_urls'      => extractAttrs($crawler, 'img#og_image', 'src'),
             'nutrient_levels' => extractListText($crawler, '#panel_nutrient_levels_content .accordion-navigation h4'),
             'nutrient_table' => extractTable($crawler, '#panel_nutrition_facts_table_content table tbody tr'),
             'ingredients'    => extractText($crawler, '#panel_ingredients_content .panel_text'),

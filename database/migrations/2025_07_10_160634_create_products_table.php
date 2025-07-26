@@ -15,16 +15,19 @@ return new class extends Migration
             $table->id();
 
             $table->unsignedBigInteger('barcode')->unique()->nullable();
-            $table->string('product_name')->nullable();
+            $table->string('title')->nullable();
             $table->string('brand')->nullable();
+            $table->string('reference')->nullable();
             $table->string('categories')->nullable();
+            $table->decimal('price', 6, 2)->nullable();
             $table->string('labels')->nullable();
             $table->string('countries_sold')->nullable();
-            $table->string('image_url')->nullable();
+            $table->string('image_urls')->nullable();
             $table->json('nutrient_levels')->nullable();
             $table->json('nutrient_table')->nullable();
             $table->text('ingredients')->nullable();
             $table->json('ingredients_info')->nullable();
+            $table->json('data_sheet')->nullable();
             $table->string('source_url')->nullable();
 
             $table->timestamps();

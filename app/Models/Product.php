@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $fillable = [
-        'name',
+        'title',
         'brand',
         'categories',
         'labels',
         'countries_sold',
         'barcode',
-        'image_url',
+        'image_urls',
+        'price',
         'nutrient_levels',
         'nutrient_table',
         'ingredients',
@@ -22,6 +23,7 @@ class Product extends Model
     ];
 
     protected $casts = [
+        'image_urls'=> 'array',
         'nutrient_levels'  => 'array',
         'nutrient_table'   => 'array',
         'ingredients_info' => 'array',

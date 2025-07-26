@@ -18,6 +18,17 @@ function extractAttr(Crawler $crawler, string $selector, string $attr): ?string
         : null;
 }
 
+function extractAttrs(Crawler $crawler, string $selector, string $attr): array
+{
+    if ($crawler->filter($selector)->count() === 0) {
+        return [];
+    }
+
+    return $crawler->filter($selector)->each(function (Crawler $node) use ($attr) {
+        return $node->attr($attr);
+    });
+}
+
 function extractListText(Crawler $crawler, string $selector): array
 {
     return $crawler->filter($selector)->each(function (Crawler $node) {

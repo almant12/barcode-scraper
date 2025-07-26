@@ -18,8 +18,37 @@ class ImageUploadService
             $imageName = 'image_' . uniqid() . '.' . $ext;
             $pathImage = $image->storeAs($path, $imageName, 'public');
 
-            return 'storage/' . $pathImage;
+            return $pathImage;
         }
+    }
+
+    public function uploadMultipleImages(Request $request, $filename, $path)
+    {
+        $imagesPaths = [];
+        if ($request->hasFile($filename)) {
+            $images = $request->{$filename};
+            foreach ($images as $image) {
+                $ext = $image->getClientOriginalExtension();
+                $imageName = 'media_' . uniqid() . '.' . $ext;
+                $image->move(public_path($path), $imageName);
+                $imagesPaths[] = $path . '/' . $imageName;
+            }
+            return $imagesPaths;
+        }
+    }
+
+    public function uploadMultipleImagesFromUrls(array $imageUrls, string $path): array
+    {
+        $imagesPaths = [];
+
+        foreach ($imageUrls as $imageUrl) {
+            $storedPath = $this->uploadImageFromUrl($imageUrl, $path);
+            if ($storedPath !== null) {
+                $imagesPaths[] = $storedPath;
+            }
+        }
+
+        return $imagesPaths;
     }
 
     public function uploadImageFromUrl($imageUrl, $path)
@@ -35,7 +64,7 @@ class ImageUploadService
         $imageName = 'image_' . uniqid() . '_' . $ext;
         Storage::disk('public')->put($path . '/' . $imageName, $imageContents);
 
-        return 'storage/' . $path . '/' . $imageName;
+        return $path . '/' . $imageName;
     }
 
     public function updateImage(Request $request, $filename, $oldPath, $path)
@@ -51,7 +80,7 @@ class ImageUploadService
             $imageName = 'image_' . uniqid() . '.' . $ext;
             $pathImage = $image->storeAs($path, $imageName, 'public');
 
-            return 'storage/' . $pathImage;
+            return $pathImage;
         }
     }
 
