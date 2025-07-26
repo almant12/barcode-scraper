@@ -49,3 +49,10 @@ function extractTable(Crawler $crawler, string $selector): array
         ];
     });
 }
+
+
+function extractBrand($title)
+{
+    $words = explode(' ', $title);
+    return implode(' ', array_slice($words, 0, 2)); // "Old Spice"
+}

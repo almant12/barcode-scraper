@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use function App\Helpers\extractBrand;
+
 class ProductService
 {
     protected $productScraper;
@@ -62,10 +64,12 @@ class ProductService
             throw new NotFoundHttpException("Product with barcode {$barcode} not found.");
         }
 
-        $imagePath = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['image_urls'], 'images');
-
+        $imagePath = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['image_urls'], 'open-food-facts');
         $product = Product::updateOrCreate(
-            ['source_url' => $url],
+            [
+                'source_url' => $url,
+                'barcode'    => $barcode,
+            ],
             [
                 'title'     => $productData['title'] ?? null,
                 'brand'            => $productData['brand'] ?? null,
@@ -88,8 +92,23 @@ class ProductService
     public function scrapeTarraco(string $barcode)
     {
         $productData = $this->tarracoScraper->scrapeProduct($barcode);
-      
-        return new ProductResource($productData);
+        $imagePaths = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['images'], 'tarraco');
+        $product = Product::updateOrCreate(
+            [
+                'source_url' => $productData['productLink'],
+                'barcode' => $barcode
+            ],
+            [
+                'title' => $productData['title'],
+                'brand' => extractBrand($productData['title']),
+                'reference' => $productData['reference'],
+                'image_urls' => $imagePaths ?? null,
+                'data_sheet' => $productData['dataSheet']
+
+            ]
+        );
+
+        return new ProductResource($product);
     }
 
     public function storeScrapeProductAi(string $barcode)

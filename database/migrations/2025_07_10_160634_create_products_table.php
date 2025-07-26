@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('barcode')->unique()->nullable();
+            $table->unsignedBigInteger('barcode')->nullable();
             $table->string('title')->nullable();
             $table->string('brand')->nullable();
             $table->string('reference')->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('price', 6, 2)->nullable();
             $table->string('labels')->nullable();
             $table->string('countries_sold')->nullable();
-            $table->string('image_urls')->nullable();
+            $table->json('image_urls')->nullable();
             $table->json('nutrient_levels')->nullable();
             $table->json('nutrient_table')->nullable();
             $table->text('ingredients')->nullable();

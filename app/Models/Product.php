@@ -19,13 +19,15 @@ class Product extends Model
         'nutrient_table',
         'ingredients',
         'ingredients_info',
+        'data_sheet',
         'source_url',
     ];
 
     protected $casts = [
-        'image_urls'=> 'array',
+        'image_urls' => 'array',
         'nutrient_levels'  => 'array',
         'nutrient_table'   => 'array',
         'ingredients_info' => 'array',
+        'data_sheet' => 'array',
     ];
 }

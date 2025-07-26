@@ -10,9 +10,7 @@ class TarracoScraper
     {
         $host = env('PUPPETEER_SCRAPER_URL');
 
-        $response = Http::post($host . '/scrape', [
-            'barcode' => $barcode,
-        ]);
+        $response = Http::get("$host/scrape/{$barcode}");
 
         $data = $response->json();
 
