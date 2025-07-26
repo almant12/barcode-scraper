@@ -4,8 +4,9 @@ namespace App\Service;
 
 use App\Models\Product;
 use App\Http\Resources\ProductResource;
+use App\Scraper\OpenFoodFactsScraper;
+use App\Scraper\TarracoScraper;
 use App\Service\ImageUploadService;
-use App\Service\ProductScraper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -15,13 +16,17 @@ class ProductService
     protected $productScraper;
     protected $imageUploadService;
     protected $geminiAi;
+    protected $openFoodFactsScraper;
+    protected $tarracoScraper;
 
     public function __construct(
-        ProductScraper $productScraper,
+        TarracoScraper $tarracoScraper,
+        OpenFoodFactsScraper $openFoodFactsScraper,
         ImageUploadService $imageUploadService,
-        GeminiAi $geminiAi
+        GeminiAi $geminiAi,
     ) {
-        $this->productScraper = $productScraper;
+        $this->tarracoScraper = $tarracoScraper;
+        $this->openFoodFactsScraper = $openFoodFactsScraper;
         $this->imageUploadService = $imageUploadService;
         $this->geminiAi = $geminiAi;
     }
@@ -47,11 +52,11 @@ class ProductService
         return new ProductResource($product);
     }
 
-    public function scrapeAndStoreProduct(string $barcode)
+    public function scrapeOpenFoodFacts(string $barcode)
     {
         $url = "https://world.openfoodfacts.org/product/{$barcode}";
 
-        $productData = $this->productScraper->scrapeProduct($url);
+        $productData = $this->openFoodFactsScraper->scrapeProduct($url);
 
         if (!isset($productData['barcode'])) {
             throw new NotFoundHttpException("Product with barcode {$barcode} not found.");
@@ -78,6 +83,13 @@ class ProductService
         );
 
         return new ProductResource($product);
+    }
+
+    public function scrapeTarraco(string $barcode)
+    {
+        $productData = $this->tarracoScraper->scrapeProduct($barcode);
+      
+        return new ProductResource($productData);
     }
 
     public function storeScrapeProductAi(string $barcode)

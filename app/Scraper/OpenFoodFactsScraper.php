@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Service;
+namespace App\Scraper;
 
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
-use function App\Helpers\extractAttr;
 use function App\Helpers\extractAttrs;
 use function App\Helpers\extractListText;
 use function App\Helpers\extractTable;
 use function App\Helpers\extractText;
 
-class ProductScraper
+class OpenFoodFactsScraper
 {
 
     public function scrapeProduct($url): array

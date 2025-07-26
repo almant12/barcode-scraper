@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service;
+namespace App\Scraper;
 
 use Illuminate\Support\Facades\Http;
 
 class TarracoScraper
 {
-    function scrapeProduct(string $barcode)
+    public function scrapeProduct(string $barcode)
     {
         $host = env('PUPPETEER_SCRAPER_URL');
 

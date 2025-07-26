@@ -13,5 +13,5 @@ Route::prefix('products')->group(function () {
     Route::post('/', [ProductController::class, 'store']);
     Route::get('/scrape/{barcode}', [ProductController::class, 'scrapeProduct']);
     Route::get('/ai-scrape/{barcode}', [ProductController::class, 'aiScrapeProduct']);
-    Route::get('/tarraco-scrape/{barcode}');
+    Route::get('/tarraco-scrape/{barcode}', [ProductController::class, 'scrapeTarraco']);
 });

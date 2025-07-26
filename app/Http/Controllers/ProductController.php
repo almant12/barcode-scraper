@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
-use App\Service\GeminiAi;
 use App\Service\ProductService;
 
 class ProductController extends Controller
@@ -28,9 +27,14 @@ class ProductController extends Controller
     }
 
 
-    public function scrapeProduct(string $barcode)
+    public function scrapeOpenFoodFacts(string $barcode)
     {
-        return $this->productService->scrapeAndStoreProduct($barcode);
+        return $this->productService->scrapeOpenFoodFacts($barcode);
+    }
+
+    public function scrapeTarraco(string $barcode)
+    {
+       return $this->productService->scrapeTarraco($barcode);
     }
 
     public function aiScrapeProduct(string $barcode)
