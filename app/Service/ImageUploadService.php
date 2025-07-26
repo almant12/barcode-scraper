@@ -3,38 +3,41 @@
 namespace App\Service;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class ImageUploadService
 {
-
-    public function uploadImage(Request $request, $filename, $path)
+    protected function makePublicPath(string $path): string
     {
+        return '/storage/' . ltrim($path, '/');
+    }
 
+    public function uploadImage(Request $request, string $filename, string $path): ?string
+    {
         if ($request->hasFile($filename)) {
-            $image = $request->{$filename};
+            $image = $request->file($filename);
             $ext = $image->getClientOriginalExtension();
             $imageName = 'image_' . uniqid() . '.' . $ext;
             $pathImage = $image->storeAs($path, $imageName, 'public');
 
-            return $pathImage;
+            return $this->makePublicPath($pathImage);
         }
+        return null;
     }
 
-    public function uploadMultipleImages(Request $request, $filename, $path)
+    public function uploadMultipleImages(Request $request, string $filename, string $path): array
     {
         $imagesPaths = [];
         if ($request->hasFile($filename)) {
-            $images = $request->{$filename};
+            $images = $request->file($filename);
             foreach ($images as $image) {
                 $ext = $image->getClientOriginalExtension();
                 $imageName = 'media_' . uniqid() . '.' . $ext;
-                $image->move(public_path($path), $imageName);
-                $imagesPaths[] = $path . '/' . $imageName;
+                $pathImage = $image->storeAs($path, $imageName, 'public');
+                $imagesPaths[] = $this->makePublicPath($pathImage);
             }
-            return $imagesPaths;
         }
+        return $imagesPaths;
     }
 
     public function uploadMultipleImagesFromUrls(array $imageUrls, string $path): array
@@ -51,43 +54,37 @@ class ImageUploadService
         return $imagesPaths;
     }
 
-    public function uploadImageFromUrl($imageUrl, $path)
+    public function uploadImageFromUrl(string $imageUrl, string $path): ?string
     {
-        $imageContents = file_get_contents($imageUrl);
-        if ($imageContents === false) {
+        try {
+            $imageContents = file_get_contents($imageUrl);
+            if ($imageContents === false) {
+                return null;
+            }
+            $ext = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
+            $imageName = 'image_' . uniqid() . '.' . $ext;
+            $storagePath = $path . '/' . $imageName;
+
+            Storage::disk('public')->put($storagePath, $imageContents);
+
+            return $this->makePublicPath($storagePath);
+        } catch (\Exception $e) {
+            // Optionally log the error
             return null;
         }
-
-        $ext = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
-        $ext = $ext ?: "jpg";
-
-        $imageName = 'image_' . uniqid() . '_' . $ext;
-        Storage::disk('public')->put($path . '/' . $imageName, $imageContents);
-
-        return $path . '/' . $imageName;
     }
 
-    public function updateImage(Request $request, $filename, $oldPath, $path)
+    public function updateImage(Request $request, string $filename, string $oldPath, string $path): ?string
     {
-
         if ($request->hasFile($filename)) {
-            if (File::exists($oldPath)) {
-                File::delete($oldPath);
-            }
-
-            $image = $request->{$filename};
-            $ext = $image->getClientOriginalExtension();
-            $imageName = 'image_' . uniqid() . '.' . $ext;
-            $pathImage = $image->storeAs($path, $imageName, 'public');
-
-            return $pathImage;
+            Storage::disk('public')->delete($oldPath);
+            return $this->uploadImage($request, $filename, $path);
         }
+        return null;
     }
 
-    public function deleteImage($path): void
+    public function deleteImage(string $path): void
     {
-        if (File::exists(public_path($path))) {
-            File::delete(public_path($path));
-        }
+        Storage::disk('public')->delete($path);
     }
 }
