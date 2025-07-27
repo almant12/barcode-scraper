@@ -60,7 +60,6 @@ class ProductService
     public function scrapeOpenFoodFacts(string $barcode)
     {
         $productData = $this->openFoodFactsScraper->scrapeProduct($barcode);
-
         if (!isset($productData['barcode'])) {
             throw new NotFoundHttpException("Product with barcode {$barcode} not found.");
         }

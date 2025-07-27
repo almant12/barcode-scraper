@@ -3,6 +3,7 @@
 namespace App\Scraper;
 
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TarracoScraper
 {
@@ -11,7 +12,9 @@ class TarracoScraper
         $host = env('PUPPETEER_SCRAPER_URL');
 
         $response = Http::get("$host/scrape/tarraco/$barcode");
-
+        if ($response->status() === 404) {
+            throw new NotFoundHttpException("Product with barcode {$barcode} not found.");
+        }
         $data = $response->json();
 
         return $data;

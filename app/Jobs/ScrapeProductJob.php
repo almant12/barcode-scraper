@@ -4,29 +4,27 @@ namespace App\Jobs;
 
 use App\Service\ProductService;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class ScrapeProductJob implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable, InteractsWithQueue, SerializesModels;
 
     protected string $barcode;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(string $barcode)
     {
         $this->barcode = $barcode;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
-        $scrapeService = new ProductService()
+        $productService = app(ProductService::class);
 
-        
+        $productService->scrapeTarraco($this->barcode);
+        $productService->scrapeLookup($this->barcode);
+        $productService->scrapeOpenFoodFacts($this->barcode);
     }
 }

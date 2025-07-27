@@ -30,8 +30,8 @@ class ScrapeBarcodesCommand extends Command
     {
         $filePath = $this->argument('file');
 
-        if (File::exists($filePath)) {
-            $this->error('File not found: {$filePath}');
+        if (!File::exists($filePath)) {
+            $this->error("File not found: {$filePath}");
             return 1;
         }
 

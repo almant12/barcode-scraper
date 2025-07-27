@@ -4,6 +4,7 @@ namespace App\Scraper;
 
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use function App\Helpers\extractAttrs;
 use function App\Helpers\extractListText;
@@ -18,6 +19,9 @@ class OpenFoodFactsScraper
 
         $url = "https://world.openfoodfacts.org/product/$barcode";
         $response = Http::get($url);
+        if ($response->status() === 404) {
+            throw new NotFoundHttpException("Product with barcode {$barcode} not found.");
+        }
         $html = $response->getBody();
         $crawler = new Crawler($html);
 
