@@ -4,20 +4,27 @@
 
 This Laravel project allows users to input a barcode and automatically scrape product details from external sources:
 
-- [OpenFoodFacts] (https://world.openfoodfacts.org/)
-- [BarcodeLookup] (https://www.barcodelookup.com/)
-- [TarracoImportExport] (https://tienda.tarracoimportexport.com/)
-- Secondary (experimental): Gemini AI-powered web search — used as a fallback but less accurate.
+-   [OpenFoodFacts] (https://world.openfoodfacts.org/)
+-   [BarcodeLookup] (https://www.barcodelookup.com/)
+-   [TarracoImportExport] (https://tienda.tarracoimportexport.com/)
+-   Secondary (experimental): Gemini AI-powered web search — used as a fallback but less accurate.
 
 ## Scraping Engine
 
-This package uses the following Symfony components to parse and extract data from HTML pages:
+This project consists of two separate service working together to scrape product data, with laravel as the main application where all product data is stored.
 
--   symfony/dom-crawler: Used to navigate and filter HTML content as a DOM tree.
+1. Laravel application using Symfony components for scraping static websites like openFoodFacts.
+2. Node.js + Puppeteer microservice for scraping javaScript-heavy page, that load content using javascript
 
--   symfony/css-selector: Allows the use of CSS selectors (like .product-title, #price, etc.) to find elements in the DOM, making it easy to target specific content.
+### Job Queue for Parallel Scraping
 
-These tools together enable precise scraping of structured data from web pages, especially when dealing with HTML that doesn't follow strict semantic structure. They are lightweight, fast, and ideal for use in CLI or Laravel command-based scraping workflows.
+*   The Laravel application is the main service, responsible for controlling the scraping process and storing results.
+*  A custom Artisan command reads barcodes from a file named barcodes.txt located in the root of the project.
+*   For each barcode, a ScrapeProductJob is dispatched to the Laravel queue.
+*   Each job triggers scraping from all three sources:
+    *  OpenFoodFacts (static, Symfony-based)
+    *  TarracoExportImport (via Puppeteer API)
+    *  BarcodeLookup (via Puppeteer API)
 
 ## Setup Instructions
 
