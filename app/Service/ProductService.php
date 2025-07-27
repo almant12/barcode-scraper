@@ -60,14 +60,10 @@ class ProductService
     public function scrapeOpenFoodFacts(string $barcode)
     {
         $productData = $this->openFoodFactsScraper->scrapeProduct($barcode);
-        if (!isset($productData['barcode'])) {
-            throw new NotFoundHttpException("Product with barcode {$barcode} not found.");
-        }
-
         $imagePath = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['image_urls'], 'open-food-facts');
         $sourceId = Source::where('name', 'openfoodfacts')->value('id');
 
-        $product = Product::updateOrCreate(
+        Product::updateOrCreate(
             [
                 'source_url' => $productData['source_url'],
                 'barcode'    => $barcode,
@@ -86,8 +82,6 @@ class ProductService
                 'source_id' => $sourceId
             ]
         );
-
-        return $product;
     }
 
     public function scrapeTarraco(string $barcode)
@@ -95,7 +89,7 @@ class ProductService
         $productData = $this->tarracoScraper->scrapeProduct($barcode);
         $imagePaths = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['images'], 'tarraco');
         $sourceId = Source::where('name', 'tarraco-import-export')->value('id');
-        $product = Product::updateOrCreate(
+        Product::updateOrCreate(
             [
                 'source_url' => $productData['productLink'],
                 'barcode' => $barcode
@@ -110,8 +104,6 @@ class ProductService
 
             ]
         );
-
-        return $product;
     }
 
     public function scrapeLookup(string $barcode)
@@ -119,7 +111,7 @@ class ProductService
         $productData = $this->lookupScraper->scrapeProduct($barcode);
         $imagePaths = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['images'], 'lookup');
         $sourceId = Source::where('name', 'barcode-lookup')->value('id');
-        $product = Product::updateOrCreate(
+        Product::updateOrCreate(
             [
                 'source_url' => $productData['url'],
                 'barcode' => $barcode
@@ -131,7 +123,6 @@ class ProductService
                 'source_id' => $sourceId
             ]
         );
-        return $product;
     }
 
     public function storeScrapeProductAi(string $barcode)

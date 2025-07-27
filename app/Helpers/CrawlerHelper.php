@@ -31,6 +31,10 @@ function extractAttrs(Crawler $crawler, string $selector, string $attr): array
 
 function extractListText(Crawler $crawler, string $selector): array
 {
+    if ($crawler->filter($selector)->count() === 0) {
+        return [];
+    }
+
     return $crawler->filter($selector)->each(function (Crawler $node) {
         return trim($node->text());
     });
@@ -38,21 +42,25 @@ function extractListText(Crawler $crawler, string $selector): array
 
 function extractTable(Crawler $crawler, string $selector): array
 {
-    return $crawler->filter($selector)->each(function (Crawler $row) {
+    return array_values(array_filter($crawler->filter($selector)->each(function (Crawler $row) {
         $columns = $row->filter('td');
-        if ($columns->count() < 2) return null;
+
+        if ($columns->count() < 3) {  // <-- require at least 3 columns
+            return null;
+        }
 
         return [
             'name' => trim($columns->eq(0)->text()),
             'value_per_100g' => trim($columns->eq(1)->text()),
             'comparison' => trim($columns->eq(2)->text())
         ];
-    });
+    })));
 }
+
 
 
 function extractBrand($title)
 {
     $words = explode(' ', $title);
-    return implode(' ', array_slice($words, 0, 2)); // "Old Spice"
+    return implode(' ', array_slice($words, 0, 2));
 }

@@ -47,7 +47,6 @@ class ScrapeBarcodesCommand extends Command
 
         foreach ($barcodes as $barcode) {
             ScrapeProductJob::dispatch($barcode);
-            $this->info("Dispatched scraping job for barcode: {$barcode}");
         }
 
         $this->info('All scraping jobs dispatched.');

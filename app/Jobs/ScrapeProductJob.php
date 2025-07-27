@@ -2,15 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Service\ProductService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\SerializesModels;
 
 class ScrapeProductJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, SerializesModels;
+    use Dispatchable, Queueable, SerializesModels;
 
     protected string $barcode;
 
@@ -21,10 +20,10 @@ class ScrapeProductJob implements ShouldQueue
 
     public function handle(): void
     {
-        $productService = app(ProductService::class);
 
-        $productService->scrapeTarraco($this->barcode);
-        $productService->scrapeLookup($this->barcode);
-        $productService->scrapeOpenFoodFacts($this->barcode);
+        dispatch(new ScrapeOpenFoodFactsJob($this->barcode));
+        dispatch(new ScrapeLookupJob($this->barcode));
+        dispatch(new ScrapeTarracoJob($this->barcode));
+
     }
 }

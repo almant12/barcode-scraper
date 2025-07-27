@@ -4,8 +4,10 @@
 
 This Laravel project allows users to input a barcode and automatically scrape product details from external sources:
 
--   Primary source: [OpenFoodFacts] (https://world.openfoodfacts.org/)
--   Secondary (experimental): Gemini AI-powered web search — used as a fallback but less accurate.
+- [OpenFoodFacts] (https://world.openfoodfacts.org/)
+- [BarcodeLookup] (https://www.barcodelookup.com/)
+- [TarracoImportExport] (https://tienda.tarracoimportexport.com/)
+- Secondary (experimental): Gemini AI-powered web search — used as a fallback but less accurate.
 
 ## Scraping Engine
 
