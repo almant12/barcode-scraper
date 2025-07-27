@@ -13,8 +13,10 @@ use function App\Helpers\extractText;
 class OpenFoodFactsScraper
 {
 
-    public function scrapeProduct($url): array
+    public function scrapeProduct($barcode): array
     {
+
+        $url = "https://world.openfoodfacts.org/product/$barcode";
         $response = Http::get($url);
         $html = $response->getBody();
         $crawler = new Crawler($html);

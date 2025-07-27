@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('categories')->nullable();
             $table->decimal('price', 6, 2)->nullable();
             $table->string('labels')->nullable();
+            $table->text('description')->nullable();
             $table->string('countries_sold')->nullable();
             $table->json('image_urls')->nullable();
             $table->json('nutrient_levels')->nullable();

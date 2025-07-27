@@ -4,16 +4,15 @@ namespace App\Scraper;
 
 use Illuminate\Support\Facades\Http;
 
-class TarracoScraper
+class LookupScraper
 {
-    public function scrapeProduct(string $barcode)
+
+    public function scrapeProduct($barcode)
     {
         $host = env('PUPPETEER_SCRAPER_URL');
-
-        $response = Http::get("$host/scrape/tarraco/$barcode");
+        $response = Http::get("$host/scrape/lookup/$barcode");
 
         $data = $response->json();
-
         return $data;
     }
 }

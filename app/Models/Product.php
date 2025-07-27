@@ -13,6 +13,7 @@ class Product extends Model
         'labels',
         'countries_sold',
         'barcode',
+        'description',
         'image_urls',
         'price',
         'nutrient_levels',

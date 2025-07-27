@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Service\ProductService;
 
 class ProductController extends Controller
@@ -16,29 +17,34 @@ class ProductController extends Controller
 
     public function index()
     {
-        return $this->productService->getProducts();
+        return ProductResource::collection($this->productService->getProducts());
     }
 
 
     public function store(StoreProductRequest $request)
     {
         $data = $request->validated();
-        return $this->productService->createProduct($data, $request);
+        return new ProductResource($this->productService->createProduct($data, $request));
     }
 
 
     public function scrapeOpenFoodFacts(string $barcode)
     {
-        return $this->productService->scrapeOpenFoodFacts($barcode);
+        return new ProductResource($this->productService->scrapeOpenFoodFacts($barcode));
     }
 
     public function scrapeTarraco(string $barcode)
     {
-       return $this->productService->scrapeTarraco($barcode);
+        return new ProductResource($this->productService->scrapeTarraco($barcode));
+    }
+
+    public function scrapeLookup(string $barcode)
+    {
+        return new ProductResource($this->productService->scrapeLookup($barcode));
     }
 
     public function aiScrapeProduct(string $barcode)
     {
-        return $this->productService->storeScrapeProductAi($barcode);
+        return new ProductResource($this->productService->storeScrapeProductAi($barcode));
     }
 }

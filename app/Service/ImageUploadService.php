@@ -74,6 +74,48 @@ class ImageUploadService
         }
     }
 
+    public function uploadBase64Image(string $base64Image, string $path): ?string
+    {
+
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+            $data = substr($base64Image, strpos($base64Image, ',') + 1);
+            $data = base64_decode($data);
+
+            if ($data === false) {
+                return null;
+            }
+
+            $extension = strtolower($type[1]); // jpg, png, gif etc.
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+
+            if (!in_array($extension, $allowedExtensions)) {
+                return null;
+            }
+
+            $fileName = 'image_' . uniqid() . '.' . $extension;
+            $storagePath = $path . '/' . $fileName;
+
+            Storage::disk('public')->put($storagePath, $data);
+
+            return $this->makePublicPath($storagePath);
+        }
+
+        return null;
+    }
+
+
+    public function uploadMultipleBase64Images(array $base64Images, string $path): array
+    {
+        $storedPaths = [];
+        foreach ($base64Images as $base64Image) {
+            $uploadedPath = $this->uploadBase64Image($base64Image, $path);
+            if ($uploadedPath !== null) {
+                $storedPaths[] = $uploadedPath;
+            }
+        }
+        return $storedPaths;
+    }
+
     public function updateImage(Request $request, string $filename, string $oldPath, string $path): ?string
     {
         if ($request->hasFile($filename)) {
