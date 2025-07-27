@@ -41,7 +41,7 @@ class ProcessBarcode extends Command
             return 1;
         }
 
-        $productData = $this->productService->scrapeAndStoreProduct($barcode);
+        $productData = $this->productService->scrapeOpenFoodFacts($barcode);
         // Your processing logic here
         $this->info("Product processed successfully for barcode: {$barcode}");
 

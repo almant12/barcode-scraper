@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Models\Product;
+use App\Models\Source;
 use App\Scraper\LookupScraper;
 use App\Scraper\OpenFoodFactsScraper;
 use App\Scraper\TarracoScraper;
@@ -50,7 +51,7 @@ class ProductService
         $product->description = $data['description'] ?? null;
         $product->image_url = $imagePath;
         $product->price = $data['price'];
-        $product->source = $data['source'] ?? null;
+        $product->source_url = $data['source'] ?? null;
         $product->save();
 
         return $product;
@@ -65,6 +66,8 @@ class ProductService
         }
 
         $imagePath = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['image_urls'], 'open-food-facts');
+        $sourceId = Source::where('name', 'openfoodfacts')->value('id');
+
         $product = Product::updateOrCreate(
             [
                 'source_url' => $productData['source_url'],
@@ -81,6 +84,7 @@ class ProductService
                 'nutrient_table'   => $productData['nutrient_table'] ?? null,
                 'ingredients'      => $productData['ingredients'] ?? null,
                 'ingredients_info' => $productData['ingredientsInfo'] ?? null,
+                'source_id' => $sourceId
             ]
         );
 
@@ -91,6 +95,7 @@ class ProductService
     {
         $productData = $this->tarracoScraper->scrapeProduct($barcode);
         $imagePaths = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['images'], 'tarraco');
+        $sourceId = Source::where('name', 'tarraco-import-export')->value('id');
         $product = Product::updateOrCreate(
             [
                 'source_url' => $productData['productLink'],
@@ -101,7 +106,8 @@ class ProductService
                 'brand' => extractBrand($productData['title']),
                 'reference' => $productData['reference'],
                 'image_urls' => $imagePaths ?? null,
-                'data_sheet' => $productData['dataSheet']
+                'data_sheet' => $productData['dataSheet'],
+                'source_id' => $sourceId
 
             ]
         );
@@ -113,7 +119,7 @@ class ProductService
     {
         $productData = $this->lookupScraper->scrapeProduct($barcode);
         $imagePaths = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['images'], 'lookup');
-
+        $sourceId = Source::where('name', 'barcode-lookup')->value('id');
         $product = Product::updateOrCreate(
             [
                 'source_url' => $productData['url'],
@@ -122,7 +128,8 @@ class ProductService
             [
                 'title' => $productData['title'],
                 'description' => $productData['description'],
-                'image_urls' => $imagePaths ?? null
+                'image_urls' => $imagePaths ?? null,
+                'source_id' => $sourceId
             ]
         );
         return $product;

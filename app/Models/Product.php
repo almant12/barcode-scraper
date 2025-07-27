@@ -3,26 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
-    protected $fillable = [
-        'title',
-        'brand',
-        'categories',
-        'labels',
-        'countries_sold',
-        'barcode',
-        'description',
-        'image_urls',
-        'price',
-        'nutrient_levels',
-        'nutrient_table',
-        'ingredients',
-        'ingredients_info',
-        'data_sheet',
-        'source_url',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'image_urls' => 'array',
@@ -31,4 +16,10 @@ class Product extends Model
         'ingredients_info' => 'array',
         'data_sheet' => 'array',
     ];
+
+
+    public function source(): BelongsTo
+    {
+        return $this->belongsTo(Source::class);
+    }
 }
