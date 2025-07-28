@@ -23,7 +23,6 @@ class ScrapeOpenFoodFactsJob implements ShouldQueue
 
         $productService = app(ProductService::class);
 
-            $productService->scrapeOpenFoodFacts($this->barcode);
-        
+        $productService->scrapeOpenFoodFacts($this->barcode);
     }
 }

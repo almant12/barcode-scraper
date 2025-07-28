@@ -12,7 +12,7 @@ class ProcessBarcode extends Command
      *
      * @var string
      */
-    protected $signature = 'barcode:process {barcode}';
+    protected $signature = 'scrape:product {barcode}';
 
     /**
      * The console command description.
@@ -41,13 +41,21 @@ class ProcessBarcode extends Command
             return 1;
         }
 
-        $productData = $this->productService->scrapeOpenFoodFacts($barcode);
-        // Your processing logic here
-        $this->info("Product processed successfully for barcode: {$barcode}");
+        $this->tryScrape(fn() => $this->productService->scrapeOpenFoodFacts($barcode), 'OpenFoodFacts');
+        $this->tryScrape(fn() => $this->productService->scrapeLookup($barcode), 'Lookup');
+        $this->tryScrape(fn() => $this->productService->scrapeTarraco($barcode), 'Tarraco');
 
-        // Optionally print some product data
-        $this->line("Product name: " . ($productData['product_name'] ?? 'N/A'));
-
+        $this->info("Product processing finished for barcode: {$barcode}");
         return 0;
+    }
+
+    protected function tryScrape(callable $scrapeFunc, string $source)
+    {
+        try {
+            $scrapeFunc();
+            $this->info("{$source} scraped successfully.");
+        } catch (\Throwable $e) {
+            $this->warn("{$source} failed: " . $e->getMessage());
+        }
     }
 }

@@ -47,6 +47,7 @@ composer install
 
 -   Set DB connection
 -   (Optional) Add Gemini API Keys if used
+-   Set PUPPETEER_SCRAPER_URL=http://localhost:3000 to connect Laravel with Puppeteer service.
 
 5. Run migrations:
 
@@ -54,27 +55,22 @@ composer install
 php artisan migrate
 ```
 
-6. Run the scraper via command:
+6. scraper via command:
 
 ```bash
+# This will scrape product through each website
 php artisan scrape:product {barcode}
+
+# To run this command, make sure you have a .txt file in the root of your project containing a list of barcodes
+php artisan scrape:products {file} #file.txt
 ```
 
+7. scraper via endPoints:
 ```bash
-Endpoint: GET /products/scrape/{barcode}
+GET http://localhost:8000/api/scrape/open-food/{barcode}
+GET http://localhost:8000/api/scrape/tarraco/{barcode}
+GET http://localhost:8000/api/scrape/lookup/{barcode}
 ```
-
-Description: Scrapes product data for the given barcode from OpenFoodFacts and saves it.
-
-Params:
-
-barcode (string) – The barcode to search
-
-Response:
-
-200 OK: Product details saved and returned.
-
-404 Not Found: Product not found on OpenFoodFacts.
 
 ## Scrape Product with GeminiAi
 
