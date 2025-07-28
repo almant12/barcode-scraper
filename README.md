@@ -28,7 +28,7 @@ This project consists of two separate service working together to scrape product
 
 ## Setup Instructions
 
-0. Before setup laravel proejct make sure u have setup first pupetter project [puppeteer-project](https://github.com/almant12/Barcode-scraper-puppeteer)
+Before setup laravel proejct make sure u have setup first pupetter project [puppeteer-project](https://github.com/almant12/Barcode-scraper-puppeteer)
 
 1. Clone the repository:
 
