@@ -18,15 +18,17 @@ This project consists of two separate service working together to scrape product
 
 ### Job Queue for Parallel Scraping
 
-*   The Laravel application is the main service, responsible for controlling the scraping process and storing results.
-*  A custom Artisan command reads barcodes from a file named barcodes.txt located in the root of the project.
-*   For each barcode, a ScrapeProductJob is dispatched to the Laravel queue.
-*   Each job triggers scraping from all three sources:
-    *  OpenFoodFacts (static, Symfony-based)
-    *  TarracoExportImport (via Puppeteer API)
-    *  BarcodeLookup (via Puppeteer API)
+-   The Laravel application is the main service, responsible for controlling the scraping process and storing results.
+-   A custom Artisan command reads barcodes from a file named barcodes.txt located in the root of the project.
+-   For each barcode, a ScrapeProductJob is dispatched to the Laravel queue.
+-   Each job triggers scraping from all three sources:
+    -   OpenFoodFacts (static, Symfony-based)
+    -   TarracoExportImport (via Puppeteer API)
+    -   BarcodeLookup (via Puppeteer API)
 
 ## Setup Instructions
+
+0. Before setup laravel proejct make sure u have setup first pupetter project [puppeteer-project](https://github.com/almant12/Barcode-scraper-puppeteer)
 
 1. Clone the repository:
 
@@ -39,7 +41,6 @@ cd barcode-scraper
 
 ```bash
 composer install
-
 ```
 
 3. Configure .env:
