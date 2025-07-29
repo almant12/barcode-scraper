@@ -62,14 +62,20 @@ php artisan migrate
 php artisan scrape:product {barcode}
 
 # To run this command, make sure you have a .txt file in the root of your project containing a list of barcodes
+# The queue must be up and running for jobs to be dispatched properly.
 php artisan scrape:products {file} #file.txt
 ```
 
 7. scraper via endPoints:
+
 ```bash
 GET http://localhost:8000/api/scrape/open-food/{barcode}
 GET http://localhost:8000/api/scrape/tarraco/{barcode}
 GET http://localhost:8000/api/scrape/lookup/{barcode}
+
+# This endpoint returns the total number of scraped products,
+# along with a breakdown of how many were scraped from each website.
+GET http://localhost:8000/api/scraped-products
 ```
 
 ## Scrape Product with GeminiAi

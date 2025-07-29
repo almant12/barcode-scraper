@@ -18,7 +18,7 @@ Route::prefix('scrape')->group(function () {
 });
 
 
-Route::get('products', function () {
+Route::get('scraped-products', function () {
 
     $results = DB::table('products')->join('sources', 'products.source_id', '=', 'sources.id')
         ->select(
