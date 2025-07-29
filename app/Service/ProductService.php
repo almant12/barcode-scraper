@@ -63,7 +63,7 @@ class ProductService
         $imagePath = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['image_urls'], 'open-food-facts');
         $sourceId = Source::where('name', 'openfoodfacts')->value('id');
 
-        Product::updateOrCreate(
+        $product = Product::updateOrCreate(
             [
                 'source_url' => $productData['source_url'],
                 'barcode'    => $barcode,
@@ -82,14 +82,16 @@ class ProductService
                 'source_id' => $sourceId
             ]
         );
+
+        return $product;
     }
 
     public function scrapeTarraco(string $barcode)
     {
         $productData = $this->tarracoScraper->scrapeProduct($barcode);
-        $imagePaths = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['images'], 'tarraco');
+        // $imagePaths = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['images'], 'tarraco');
         $sourceId = Source::where('name', 'tarraco-import-export')->value('id');
-        Product::updateOrCreate(
+        $product = Product::updateOrCreate(
             [
                 'source_url' => $productData['productLink'],
                 'barcode' => $barcode
@@ -98,12 +100,13 @@ class ProductService
                 'title' => $productData['title'],
                 'brand' => extractBrand($productData['title']),
                 'reference' => $productData['reference'],
-                'image_urls' => $imagePaths ?? null,
+                'image_urls' => $productData['images'],
                 'data_sheet' => $productData['dataSheet'],
                 'source_id' => $sourceId
 
             ]
         );
+        return $product;
     }
 
     public function scrapeLookup(string $barcode)
@@ -111,7 +114,7 @@ class ProductService
         $productData = $this->lookupScraper->scrapeProduct($barcode);
         $imagePaths = $this->imageUploadService->uploadMultipleImagesFromUrls($productData['images'], 'lookup');
         $sourceId = Source::where('name', 'barcode-lookup')->value('id');
-        Product::updateOrCreate(
+        $product = Product::updateOrCreate(
             [
                 'source_url' => $productData['url'],
                 'barcode' => $barcode
@@ -123,6 +126,8 @@ class ProductService
                 'source_id' => $sourceId
             ]
         );
+
+        return $product;
     }
 
     public function storeScrapeProductAi(string $barcode)

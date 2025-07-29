@@ -24,6 +24,5 @@ class ScrapeProductJob implements ShouldQueue
         dispatch(new ScrapeOpenFoodFactsJob($this->barcode));
         dispatch(new ScrapeLookupJob($this->barcode));
         dispatch(new ScrapeTarracoJob($this->barcode));
-
     }
 }

@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 class ScrapeTarracoJob implements ShouldQueue
 {
     use Dispatchable, SerializesModels;
-
+    public $timeout = 10;
     protected string $barcode;
 
     public function __construct(string $barcode)
@@ -24,7 +24,6 @@ class ScrapeTarracoJob implements ShouldQueue
         $productService = app(ProductService::class);
 
 
-            $productService->scrapeTarraco($this->barcode);
-        
+        $productService->scrapeTarraco($this->barcode);
     }
 }
